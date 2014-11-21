@@ -3,7 +3,7 @@
     "version": "0.0.1-alpha",
     "autoload": {
         "psr-4": {
-            "Marshall\\": "src"
+            "Marshall\\IoC\\": "src"
         }
     }
 }
