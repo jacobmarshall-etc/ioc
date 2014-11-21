@@ -2,8 +2,8 @@
     "name": "jacobmarshall/ioc",
     "version": "0.0.1-alpha",
     "autoload": {
-        "psr-4": {
-            "Marshall\\IoC\\": "src"
+        "psr-0": {
+            "Marshall": "src/"
         }
     }
 }
