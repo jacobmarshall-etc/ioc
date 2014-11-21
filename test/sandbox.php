@@ -53,6 +53,14 @@ interface IUserRepository {
 
 class MockUserRepository implements IUserRepository {
     /**
+     * @constructor
+     */
+    public function __construct()
+    {
+        var_dump('Create MockUserRepository!');
+    }
+
+    /**
      * @return User[]
      */
     public function getAll()
@@ -110,9 +118,14 @@ $ioc->singleton('IUserRepository', function() use ($ioc)
     return $ioc->create('MockUserRepository');
 });
 
-// $ioc->bind('IUserRepository', 'MockUserRepository');
+//$ioc->bind('IUserRepository', 'MockUserRepository');
 
 $controller = $ioc->create('HomeController');
 $method = $ioc->invoke($controller, 'index');
 
 var_dump($method);
+
+$ioc->call(function(IUserRepository $users)
+{
+    var_dump($users->getAll());
+});
