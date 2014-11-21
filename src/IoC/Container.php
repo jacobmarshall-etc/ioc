@@ -8,6 +8,11 @@ class Container {
     protected $bindings = [];
 
     /**
+     * @var array
+     */
+    protected $singletons = [];
+
+    /**
      * @param string $target
      * @param string $implementation
      */
@@ -18,11 +23,22 @@ class Container {
 
     /**
      * @param string $target
+     * @param mixed|callable $singleton
+     */
+    public function singleton($target, $singleton)
+    {
+        $this->singletons[$target] = $singleton;
+    }
+
+    /**
+     * @param string $target
      * @return mixed
      */
     public function create($target)
     {
         $binding = $this->getTargetImplementation($target);
+
+        if ($this->hasSingleton($binding)) return $this->getSingleton($binding);
 
         $reflect = new \ReflectionClass($binding);
 
@@ -59,6 +75,21 @@ class Container {
         $dependencies = $this->getDependencies($parameters);
 
         return $method->invokeArgs($obj, $dependencies);
+    }
+
+    /**
+     * @param \Closure $closure
+     * @return mixed
+     */
+    public function call($closure)
+    {
+        $reflect = new \ReflectionFunction($closure);
+
+        $parameters = $reflect->getParameters();
+
+        $dependencies = $this->getDependencies($parameters);
+
+        return $reflect->invokeArgs($dependencies);
     }
 
     //
@@ -118,6 +149,33 @@ class Container {
         }
 
         throw new \RuntimeException('Method parameter is not invokable.');
+    }
+
+    /**
+     * @param string $target
+     * @return bool
+     */
+    public function hasSingleton($target)
+    {
+        return array_key_exists($target, $this->singletons);
+    }
+
+    /**
+     * @param string $target
+     * @return mixed|null
+     */
+    public function getSingleton($target)
+    {
+        $singleton = $this->singletons[$target];
+
+        if ($singleton instanceof \Closure)
+        {
+            $singleton = $this->call($singleton);
+
+            $this->singletons[$target] = $singleton;
+        }
+
+        return $singleton;
     }
 
 }

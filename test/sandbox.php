@@ -105,7 +105,12 @@ class HomeController {
 
 $ioc = new Marshall\IoC\Container();
 
-$ioc->bind('IUserRepository', 'MockUserRepository');
+$ioc->singleton('IUserRepository', function() use ($ioc)
+{
+    return $ioc->create('MockUserRepository');
+});
+
+// $ioc->bind('IUserRepository', 'MockUserRepository');
 
 $controller = $ioc->create('HomeController');
 $method = $ioc->invoke($controller, 'index');
