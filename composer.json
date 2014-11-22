@@ -1,6 +1,6 @@
 {
     "name": "jacobmarshall/ioc",
-    "version": "0.0.1-alpha",
+    "version": "0.0.2-alpha",
     "description": "The lightweight IoC container.",
     "keywords": ["IoC"],
     "license": "MIT",
